@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>题目列表展示</title>
   <style>
     body {
@@ -13,6 +14,22 @@
       padding-top: 50px;
     }
 
+    /* 基础容器样式 */
+    .stats-container, .answer-container, .dashboard, .list-container {
+      width: 95%;           /* 手机端默认宽度 */
+      max-width: 800px;     /* 电脑端最大宽度 */
+      margin: 20px auto;    /* 居中 */
+      padding: 20px;        /* 适当减小内边距 */
+      box-sizing: border-box;
+    }
+
+    /* 媒体查询：针对屏幕宽度大于 768px 的设备（电脑/平板） */
+    @media (min-width: 768px) {
+      .stats-container, .answer-container, .dashboard {
+        width: 80%;       /* 电脑端适当收窄，避免文字过长 */
+        padding: 40px;    /* 增加留白感 */
+      }
+    }
     h1 {
       color: #2c3e50;
       margin-bottom: 30px;
@@ -82,27 +99,59 @@
       padding-left: 15px;
     }
 
-    /* 按钮样式 */
-    .add-button {
-      background-color: #3498db;
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-
-    .add-button:hover {
-      background-color: #2980b9;
-      transform: scale(1.05); /* 鼠标悬停微调，动感十足 */
-    }
-
     /* 题目列表容器 */
     .container {
       width: 90%;
       max-width: 800px;
       margin: 0 auto;
+    }
+
+    /* 导航栏内层：确保按钮组垂直居中 */
+    .nav-content {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px; /* 两个按钮之间的间距 */
+    }
+
+    /* 基础按钮样式（原 add-button 逻辑） */
+    .nav-btn {
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    /* 创建按钮：蓝色 */
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+    }
+
+    /* 返回按钮：深灰色或青色（保持同等视觉量级） */
+    .btn-secondary {
+      background-color: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #7f8c8d;
+      transform: translateY(-2px);
     }
   </style>
 </head>
@@ -110,7 +159,10 @@
 <div class="top-nav">
   <div class="nav-content">
     <h1 class="page-title">题目列表</h1>
-    <a href="/quests/create" class="add-button">+ 创建题目</a>
+    <div class="nav-buttons">
+      <a href="/quests" class="nav-btn btn-secondary">返回主页</a>
+      <a href="/quests/create" class="nav-btn btn-primary">+ 创建题目</a>
+    </div>
   </div>
 </div>
 <div class="container">

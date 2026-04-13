@@ -2,9 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>开始答题</title>
     <style>
+        input[type="range"] {
+            width: 100%;
+            margin: 15px 0;
+        }
         body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        /* 基础容器样式 */
+        .stats-container, .answer-container, .dashboard, .list-container {
+            width: 90%;           /* 手机端默认宽度 */
+            max-width: 800px;     /* 电脑端最大宽度 */
+            margin: 20px auto;    /* 居中 */
+            padding: 20px;        /* 适当减小内边距 */
+            box-sizing: border-box;
+        }
+
+        /* 媒体查询：针对屏幕宽度大于 768px 的设备（电脑/平板） */
+        @media (min-width: 768px) {
+            .stats-container, .answer-container, .dashboard {
+                width: 80%;       /* 电脑端适当收窄，避免文字过长 */
+                padding: 40px;    /* 增加留白感 */
+            }
+        }
         .answer-container { background: white; padding: 30px; border-radius: 15px; width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .quest-page { display: none; } /* 默认隐藏所有题 */
         .active { display: block; }    /* 只显示当前题 */
@@ -16,6 +37,24 @@
         button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; }
         .btn-prev { background: #bdc3c7; }
         .btn-next { background: #3498db; color: white; }
+        .footer-nav {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee; /* 加一条虚线分割，更有层次感 */
+            text-align: center;
+        }
+
+        .btn-back-home {
+            text-decoration: none;
+            color: #95a5a6; /* 灰蓝色，不抢眼 */
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .btn-back-home:hover {
+            color: #34495e; /* 悬停时稍微变深 */
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -44,6 +83,12 @@
         <div class="nav-btns">
             <button type="button" class="btn-prev" onclick="changePage(-1)" id="prevBtn" style="visibility: hidden;">上一题</button>
             <button type="button" class="btn-next" onclick="changePage(1)" id="nextBtn">下一题</button>
+        </div>
+
+        <div class="footer-nav">
+            <a href="/quests" class="btn-back-home" onclick="return confirm('确定要放弃当前的进度并返回吗？')">
+                ← 放弃答题并返回首页
+            </a>
         </div>
     </form>
 </div>

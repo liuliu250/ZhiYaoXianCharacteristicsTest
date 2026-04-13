@@ -2,26 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>答题结算</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; display: flex; justify-content: center; padding: 40px; }
-        .stats-container { background: white; width: 100%; max-width: 800px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        /* 基础容器样式 */
+        .stats-container, .answer-container, .dashboard, .list-container {
+            width: 95%;           /* 手机端默认宽度 */
+            max-width: 800px;     /* 电脑端最大宽度 */
+            margin: 20px auto;    /* 居中 */
+            padding: 20px;        /* 适当减小内边距 */
+            box-sizing: border-box;
+        }
 
+        /* 媒体查询：针对屏幕宽度大于 768px 的设备（电脑/平板） */
+        @media (min-width: 768px) {
+            .stats-container, .answer-container, .dashboard {
+                width: 80%;       /* 电脑端适当收窄，避免文字过长 */
+                padding: 40px;    /* 增加留白感 */
+            }
+        }
+        @media (max-width: 600px) {
+            table {
+                display: block;
+                overflow-x: auto; /* 允许表格横向滚动 */
+                white-space: nowrap; /* 避免文字强制换行 */
+            }
+
+            /* 减小均值向量卡片的字体 */
+            .vector-item {
+                padding: 5px;
+                margin: 2px;
+            }
+            .vector-item div:last-child {
+                font-size: 1rem !important;
+            }
+        }
+        .stats-container { background: white; width: 100%; max-width: 800px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .score-banner { text-align: center; padding: 20px; background: #ebf5ff; border-radius: 10px; margin-bottom: 30px; }
         .score-banner h1 { margin: 0; color: #2c3e50; font-size: 1.2rem; }
-        .final-score { font-size: 3rem; color: #3498db; font-weight: bold; }
-
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { background-color: #fcfcfc; color: #7f8c8d; text-align: left; padding: 12px; border-bottom: 2px solid #eee; }
         td { padding: 15px 12px; border-bottom: 1px solid #eee; color: #34495e; }
-
         .id-badge { background: #eee; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.9rem; }
-        .score-bar-bg { background: #eee; height: 8px; border-radius: 4px; width: 100px; display: inline-block; margin-right: 10px; }
-        .score-bar-fill { background: #3498db; height: 100%; border-radius: 4px; }
-
         .back-btn { display: inline-block; margin-top: 30px; text-decoration: none; color: #3498db; font-weight: 500; }
         .back-btn:hover { text-decoration: underline; }
-
         .vector-item {
             background: white;
             padding: 10px 15px;
@@ -31,51 +56,33 @@
             flex: 1;
             margin: 0 5px;
         }
-
-        /* 容器：所有内容从左侧开始 */
-        .bidirectional-bar-container {
-            height: 24px;
+        .visual-bar-container {
+            height: 12px; /* 稍微细一点，更精致 */
             background-color: #f1f1f1;
-            border-radius: 12px;
+            border-radius: 6px;
             overflow: hidden;
-            position: relative;
-            border: 1px solid #e0e0e0;
-            display: flex; /* 使用 flex 确保内部块居左 */
-            justify-content: flex-start;
+            width: 100%;
         }
-
         .fill-block {
             height: 100%;
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end; /* 数字显示在进度条的末端（右侧） */
-            min-width: 2px; /* 即使是0也给一点点视觉提示 */
+            transition: width 0.4s ease-out;
         }
-
-        /* 颜色定义 */
-        .fill-block.positive {
-            background-color: #3498db; /* 正数：蓝色 */
-        }
-
-        .fill-block.negative {
-            background-color: #e74c3c; /* 负数：红色 */
-        }
-
-        .score-text {
-            color: white;
-            font-size: 0.85rem;
+        .fill-block.positive { background-color: #3498db; }
+        .fill-block.negative { background-color: #e74c3c; }
+        .score-number-cell {
+            font-family: 'Courier New', monospace;
             font-weight: bold;
-            padding: 0 8px;
-            white-space: nowrap; /* 防止数字换行 */
+            font-size: 1.0rem;
         }
+        .text-pos { color: #3498db; } /* 正数蓝色 */
+        .text-neg { color: #e74c3c; } /* 负数红色 */
     </style>
 </head>
 <body>
 
 <div class="stats-container">
     <div class="score-banner">
-        <h1>最终评估结果向量</h1>
+        <h1>最终评估结果</h1>
         <div style="display: flex; justify-content: space-around; margin-top: 20px;">
             <div th:each="val, iterStat : ${finalVector}" class="vector-item">
                 <div style="font-size: 0.8rem; color: #7f8c8d;" th:text="'维度 ' + ${iterStat.count}"></div>
@@ -89,30 +96,38 @@
     <table>
         <thead>
         <tr>
-            <th width="15%">题目ID</th>
-            <th width="55%">题目标题</th>
-            <th width="30%">您的打分 (0-100)</th>
-        </tr>
+            <th width="10%">ID</th>
+            <th width="50%">题目标题</th>
+            <th width="25%">可视化倾向</th>
+            <th width="15%" style="text-align: right;">打分分值</th> </tr>
         </thead>
         <tbody>
         <tr th:each="item : ${details}">
             <td><span class="id-badge" th:text="${item.id}">1</span></td>
             <td><strong th:text="${item.title}">题目名称</strong></td>
+
             <td>
-                <div class="bidirectional-bar-container">
+                <div class="visual-bar-container">
                     <div class="fill-block"
                          th:classappend="${item.userScore >= 0} ? 'positive' : 'negative'"
                          th:style="'width:' + ${#numbers.formatDecimal(T(java.lang.Math).abs(item.userScore) * 100, 1, 0)} + '%'">
-                        <span class="score-text" th:text="${#numbers.formatDecimal(item.userScore, 1, 2)}">0.00</span>
                     </div>
                 </div>
+            </td>
+
+            <td style="text-align: right;">
+                <span class="score-number-cell"
+                      th:classappend="${item.userScore >= 0} ? 'text-pos' : 'text-neg'"
+                      th:text="${#numbers.formatDecimal(item.userScore, 1, 2)}">
+                    0.00
+                </span>
             </td>
         </tr>
         </tbody>
     </table>
 
     <div style="text-align: center; margin-top: 30px;">
-        <a href="/quests" class="back-btn">返回主控制台</a>
+        <a href="/quests" class="back-btn">返回主页</a>
     </div>
 </div>
 
