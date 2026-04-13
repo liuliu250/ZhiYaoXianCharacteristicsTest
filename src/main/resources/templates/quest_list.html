@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>问卷列表</title>
+  <style>
+    .card { border: 1px solid #ddd; padding: 15px; margin: 10px; border-radius: 8px; box-shadow: 2px 2px 5px #eee; }
+    h2 { color: #2c3e50; }
+    .author { color: #7f8c8d; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+<h1>我的问卷系统</h1>
+<div th:each="q : ${questsList}" class="card">
+  <h2 th:text="${q.title}">问卷标题</h2>
+  <p class="author">作者：<span th:text="${q.author}">作者名</span></p>
+  <p th:text="${q.description}">问卷描述内容...</p>
+  <button th:onclick="'alert(\'开始回答问卷 ID: ' + ${q.id} + '\')'">填写问卷</button>
+</div>
+</body>
+</html>
