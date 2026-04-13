@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>答题结算</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; display: flex; justify-content: center; padding: 40px; }
+        .stats-container { background: white; width: 100%; max-width: 800px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+        .score-banner { text-align: center; padding: 20px; background: #ebf5ff; border-radius: 10px; margin-bottom: 30px; }
+        .score-banner h1 { margin: 0; color: #2c3e50; font-size: 1.2rem; }
+        .final-score { font-size: 3rem; color: #3498db; font-weight: bold; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: #fcfcfc; color: #7f8c8d; text-align: left; padding: 12px; border-bottom: 2px solid #eee; }
+        td { padding: 15px 12px; border-bottom: 1px solid #eee; color: #34495e; }
+
+        .id-badge { background: #eee; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.9rem; }
+        .score-bar-bg { background: #eee; height: 8px; border-radius: 4px; width: 100px; display: inline-block; margin-right: 10px; }
+        .score-bar-fill { background: #3498db; height: 100%; border-radius: 4px; }
+
+        .back-btn { display: inline-block; margin-top: 30px; text-decoration: none; color: #3498db; font-weight: 500; }
+        .back-btn:hover { text-decoration: underline; }
+
+        .vector-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stats-container">
+    <div class="score-banner">
+        <h1>综合评估向量 (均值)</h1>
+        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+            <div th:each="val, iterStat : ${finalVector}" class="vector-item">
+                <div style="font-size: 0.8rem; color: #7f8c8d;" th:text="'维度 ' + ${iterStat.count}">维度</div>
+                <div style="font-size: 1.5rem; color: #3498db; font-weight: bold;"
+                     th:text="${#numbers.formatDecimal(val, 1, 3)}">0.000</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>答题明细</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>题目ID</th>
+            <th>题目标题</th>
+            <th>用户打分 (0-100)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${details}">
+            <td><span class="id-badge" th:text="${item.id}">1</span></td>
+            <td th:text="${item.title}">题目名称加载中...</td>
+            <td>
+                <div class="score-bar-bg">
+                    <div class="score-bar-fill" th:style="'width:' + ${item.userScore} + '%'"></div>
+                </div>
+                <span th:text="${item.userScore}">50</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/quests/list" class="back-btn">← 返回题目列表</a>
+</div>
+
+</body>
+</html>

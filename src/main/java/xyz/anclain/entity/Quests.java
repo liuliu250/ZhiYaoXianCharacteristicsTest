@@ -20,11 +20,16 @@ public class Quests {
     private String description;
     private String author;
 
+    @Column(name = "is_shown", nullable = false)
+    private Boolean isShown = true; // 默认值为 true
+
     @Convert(converter = ListConverter.class)
     @Column(columnDefinition = "json")
     private List<Double> priority;
 
     @Column(name = "create_time")
     private LocalDateTime createTime;
+
+
 
 }

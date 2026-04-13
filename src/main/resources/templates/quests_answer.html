@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>开始答题</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .answer-container { background: white; padding: 30px; border-radius: 15px; width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .quest-page { display: none; } /* 默认隐藏所有题 */
+        .active { display: block; }    /* 只显示当前题 */
+
+        .slider-box { margin: 30px 0; text-align: center; }
+        input[type="range"] { width: 100%; cursor: pointer; }
+
+        .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; }
+        button { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; }
+        .btn-prev { background: #bdc3c7; }
+        .btn-next { background: #3498db; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="answer-container">
+    <form id="answerForm" th:action="@{/quests/stats}" method="post">
+        <div th:each="q, stat : ${questsList}" class="quest-page" th:classappend="${stat.index == 0} ? 'active' : ''">
+            <h3 th:text="'问题 ' + ${stat.count} + ': ' + ${q.title}">题目名称</h3>
+            <p th:text="${q.description}" style="color: #7f8c8d;"></p>
+
+            <div class="slider-box">
+                <label>请滑动选择程度 (0 - 100): <span th:id="'val-' + ${stat.index}">50</span></label>
+                <input type="hidden" th:name="'results[' + ${stat.index} + '].id'" th:value="${q.id}">
+                <input type="range" th:name="'results[' + ${stat.index} + '].score'"
+                       min="0" max="100" value="50"
+                       th:oninput="|document.getElementById('val-${stat.index}').innerText = this.value|">
+            </div>
+        </div>
+
+        <div class="nav-btns">
+            <button type="button" class="btn-prev" onclick="changePage(-1)" id="prevBtn" style="visibility: hidden;">上一题</button>
+            <button type="button" class="btn-next" onclick="changePage(1)" id="nextBtn">下一题</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let currentPage = 0;
+    const pages = document.querySelectorAll('.quest-page');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function changePage(step) {
+        pages[currentPage].classList.remove('active');
+        currentPage += step;
+        pages[currentPage].classList.add('active');
+
+        // 控制按钮显示
+        prevBtn.style.visibility = (currentPage === 0) ? 'hidden' : 'visible';
+
+        if (currentPage === pages.length - 1) {
+            nextBtn.innerText = "提交结算";
+            nextBtn.style.background = "#2ecc71";
+            nextBtn.onclick = () => document.getElementById('answerForm').submit();
+        } else {
+            nextBtn.innerText = "下一题";
+            nextBtn.style.background = "#3498db";
+            nextBtn.onclick = () => changePage(1);
+        }
+    }
+</script>
+</body>
+</html>
