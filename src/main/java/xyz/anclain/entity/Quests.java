@@ -2,8 +2,10 @@ package xyz.anclain.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import xyz.anclain.utils.ListConverter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,8 +17,12 @@ public class Quests {
     private Long id;
 
     private String title;
-    private String descriptions;
+    private String description;
     private String author;
+
+    @Convert(converter = ListConverter.class)
+    @Column(columnDefinition = "json")
+    private List<Double> priority;
 
     @Column(name = "create_time")
     private LocalDateTime createTime;

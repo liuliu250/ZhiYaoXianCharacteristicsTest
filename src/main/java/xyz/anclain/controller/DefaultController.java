@@ -1,18 +1,16 @@
-package xyz.anclain;
+package xyz.anclain.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import xyz.anclain.entity.Quests;
 import xyz.anclain.repository.QuestsRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Controller
+@RestController
 public class DefaultController {
 
     @GetMapping("")
@@ -22,7 +20,7 @@ public class DefaultController {
 
     @GetMapping("/login")
     public String login() {
-        return "Hello, World!";
+        return "Hello, World!\nThis is login page.";
     }
 
     @Autowired
@@ -37,12 +35,6 @@ public class DefaultController {
 
         questsRepository.save(q);
         return "Success!, Quest Num is " + q.getId();
-    }
-
-    @GetMapping("/quests/list")
-    public String getAllQuests(Model model) {
-        model.addAttribute("questList", questsRepository.findAll());
-        return "quest_list";
     }
 
 }

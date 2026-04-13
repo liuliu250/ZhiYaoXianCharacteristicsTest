@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>题目列表展示</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* 水平居中 */
+      padding-top: 50px;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 600px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center; /* 内容居中 */
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      margin: 0 0 10px 0;
+      color: #34495e;
+    }
+
+    .info {
+      color: #7f8c8d;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+
+    .desc {
+      color: #95a5a6;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<h1>题目列表</h1>
+
+<div class="container">
+  <div th:each="q : ${questsList}" class="card">
+    <h2 th:text="${q.title}">题目标题</h2>
+    <div class="priority-tag" style="margin: 10px 0; color: #3498db; font-weight: bold;">
+      权重分配: [ <span th:text="${#strings.listJoin(q.priority, ' | ')}">0.0</span> ]
+    </div>
+    <div class="info">
+      作者：<span th:text="${q.author}">未知</span> |
+      时间：<span th:text="${#temporals.format(q.createTime, 'yyyy-MM-dd HH:mm')}">2026-04-13</span>
+    </div>
+    <p class="desc" th:text="${q.description}">这里是题目的简短描述信息...</p>
+  </div>
+</div>
+
+</body>
+</html>
