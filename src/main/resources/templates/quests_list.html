@@ -52,12 +52,67 @@
       color: #95a5a6;
       font-style: italic;
     }
+
+    /* 导航栏外层：实现背景颜色和阴影 */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    /* 导航栏内层：控制内容对齐和最大宽度 */
+    .nav-content {
+      max-width: 800px; /* 建议与 container 保持一致 */
+      margin: 0 auto;   /* 居中 */
+      display: flex;
+      justify-content: space-between; /* 重点：标题在左，按钮在右 */
+      align-items: center;            /* 垂直方向居中 */
+      padding: 15px 20px;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #2c3e50;
+      border-left: 5px solid #3498db; /* 加个成电蓝的小边边，更有设计感 */
+      padding-left: 15px;
+    }
+
+    /* 按钮样式 */
+    .add-button {
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .add-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05); /* 鼠标悬停微调，动感十足 */
+    }
+
+    /* 题目列表容器 */
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
   </style>
 </head>
 <body>
-
-<h1>题目列表</h1>
-
+<div class="top-nav">
+  <div class="nav-content">
+    <h1 class="page-title">题目列表</h1>
+    <a href="/quests/create" class="add-button">+ 创建题目</a>
+  </div>
+</div>
 <div class="container">
   <div th:each="q : ${questsList}" class="card">
     <h2 th:text="${q.title}">题目标题</h2>
