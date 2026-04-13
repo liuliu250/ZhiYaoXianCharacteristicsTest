@@ -27,11 +27,17 @@
             <p th:text="${q.description}" style="color: #7f8c8d;"></p>
 
             <div class="slider-box">
-                <label>请滑动选择程度 (0 - 100): <span th:id="'val-' + ${stat.index}">50</span></label>
-                <input type="hidden" th:name="'results[' + ${stat.index} + '].id'" th:value="${q.id}">
-                <input type="range" th:name="'results[' + ${stat.index} + '].score'"
-                       min="0" max="100" value="50"
+                <label>请选择您的倾向 (-1 ~ 1): <span th:id="'val-' + ${stat.index}">0</span></label>
+
+                <input type="range"
+                       th:name="'results[' + ${stat.index} + '].score'"
+                       min="-1"
+                       max="1"
+                       step="0.01"
+                       value="0"
                        th:oninput="|document.getElementById('val-${stat.index}').innerText = this.value|">
+
+                <input type="hidden" th:name="'results[' + ${stat.index} + '].id'" th:value="${q.id}">
             </div>
         </div>
 

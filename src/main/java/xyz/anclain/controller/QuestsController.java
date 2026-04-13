@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/quests")
 public class QuestsController {
 
+    @GetMapping("")
+    public String index() {
+        return "quests_index"; // 返回上面创建的 HTML 文件名
+    }
+
     @Autowired
     private QuestsRepository questsRepository;
 
@@ -43,7 +48,7 @@ public class QuestsController {
         if (priority != null) {
             List<Double> cleanedList = priority.stream()
                     .filter(Objects::nonNull)
-                    .map(val -> val < 0 ? 0.0 : val)
+                    .map(val -> val < -1 ? -1.0 : val)
                     .map(val -> val > 1 ? 1.0 : val)
                     .collect(Collectors.toList());
             quest.setPriority(cleanedList);
@@ -65,44 +70,44 @@ public class QuestsController {
 
     @PostMapping("/stats")
     public String calculateStats(AnswerForm form, Model model) {
-        // 初始化一个长度为 5 的数组，用于累加每个维度的总分
         double[] vectorSum = new double[5];
+        double[] weightAbsSum = new double[5];
         List<Map<String, Object>> details = new ArrayList<>();
-        int questCount = 0;
 
-        for (AnswerDTO answer : form.getResults()) {
-            Quests q = questsRepository.findById(answer.getId()).orElse(null);
-            if (q != null && q.getPriority() != null) {
-                questCount++;
-                double userSliderScale = answer.getScore() / 100.0; // 将 0-100 转为 0-1
-                List<Double> priority = q.getPriority();
+        if (form.getResults() != null) {
+            for (AnswerDTO answer : form.getResults()) {
+                Quests q = questsRepository.findById(answer.getId()).orElse(null);
+                if (q != null && q.getPriority() != null) {
+                    // 直接获取滑动条分值 (-1 到 1)
+                    double userVal = answer.getScore();
+                    List<Double> priority = q.getPriority();
 
-                // 题目最终分值向量 = 用户分值 * 权重向量 (逐位相乘)
-                // 同时累加到总向量中
-                for (int i = 0; i < 5; i++) {
-                    if (i < priority.size()) {
-                        vectorSum[i] += userSliderScale * priority.get(i);
+                    for (int i = 0; i < 5; i++) {
+                        if (i < priority.size()) {
+                            double w = priority.get(i);
+                            // 累加：分值 * 权重
+                            vectorSum[i] += userVal * w;
+                            // 分母：权重绝对值的累加
+                            weightAbsSum[i] += Math.abs(w);
+                        }
                     }
+
+                    Map<String, Object> detail = new HashMap<>();
+                    detail.put("id", q.getId());
+                    detail.put("title", q.getTitle());
+                    detail.put("userScore", userVal); // 存入 -1~1 的分值用于明细展示
+                    details.add(detail);
                 }
-
-                // 封装明细展示
-                Map<String, Object> detail = new HashMap<>();
-                detail.put("id", q.getId());
-                detail.put("title", q.getTitle());
-                detail.put("userScore", answer.getScore());
-                details.add(detail);
             }
         }
 
-        // 计算均值向量：逐分量除以题目总数
-        double[] avgVector = new double[5];
-        if (questCount > 0) {
-            for (int i = 0; i < 5; i++) {
-                avgVector[i] = vectorSum[i] / questCount;
-            }
+        // 计算最终向量
+        double[] finalVector = new double[5];
+        for (int i = 0; i < 5; i++) {
+            finalVector[i] = (weightAbsSum[i] != 0) ? (vectorSum[i] / weightAbsSum[i]) : 0.0;
         }
 
-        model.addAttribute("finalVector", avgVector); // 传递 5 维结果向量
+        model.addAttribute("finalVector", finalVector);
         model.addAttribute("details", details);
         return "quests_stats";
     }

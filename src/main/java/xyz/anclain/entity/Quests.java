@@ -30,6 +30,4 @@ public class Quests {
     @Column(name = "create_time")
     private LocalDateTime createTime;
 
-
-
 }
