@@ -12,22 +12,28 @@ import xyz.anclain.dto.AnswerDTO;
 import xyz.anclain.dto.AnswerForm;
 import xyz.anclain.entity.Quests;
 import xyz.anclain.repository.QuestsRepository;
+import xyz.anclain.utils.DimensionReference;
+import xyz.anclain.utils.QuestService;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static xyz.anclain.utils.DimensionReference.NAMES;
+
 @Controller
 @RequestMapping("/quests")
 public class QuestsController {
+
+    @Autowired
+    private QuestService questService;
+    @Autowired
+    private QuestsRepository questsRepository;
 
     @GetMapping("")
     public String index() {
         return "quests_index"; // 返回上面创建的 HTML 文件名
     }
-
-    @Autowired
-    private QuestsRepository questsRepository;
 
     @GetMapping("/list")
     public String getAllQuests(Model model) {
@@ -70,45 +76,20 @@ public class QuestsController {
 
     @PostMapping("/stats")
     public String calculateStats(AnswerForm form, Model model) {
-        double[] vectorSum = new double[5];
-        double[] weightAbsSum = new double[5];
-        List<Map<String, Object>> details = new ArrayList<>();
+        if (form.getResults() == null) return "redirect:/quests";
 
-        if (form.getResults() != null) {
-            for (AnswerDTO answer : form.getResults()) {
-                Quests q = questsRepository.findById(answer.getId()).orElse(null);
-                if (q != null && q.getPriority() != null) {
-                    // 直接获取滑动条分值 (-1 到 1)
-                    double userVal = answer.getScore();
-                    List<Double> priority = q.getPriority();
+        // 1. 调用 Service 计算向量
+        double[] finalVector = questService.calculateFinalVector(form.getResults(), questsRepository);
 
-                    for (int i = 0; i < 5; i++) {
-                        if (i < priority.size()) {
-                            double w = priority.get(i);
-                            // 累加：分值 * 权重
-                            vectorSum[i] += userVal * w;
-                            // 分母：权重绝对值的累加
-                            weightAbsSum[i] += Math.abs(w);
-                        }
-                    }
+        // 2. 调用 Service 匹配人格
+        String matchedProfile = questService.findBestMatchProfile(finalVector);
 
-                    Map<String, Object> detail = new HashMap<>();
-                    detail.put("id", q.getId());
-                    detail.put("title", q.getTitle());
-                    detail.put("userScore", userVal); // 存入 -1~1 的分值用于明细展示
-                    details.add(detail);
-                }
-            }
-        }
+        // 3. 准备前端展示数据
+        model.addAttribute("vectorDetails", questService.buildVectorDetails(finalVector));
+        model.addAttribute("matchedProfile", matchedProfile);
+        model.addAttribute("dimensionProfiles", DimensionReference.PROFILES);
+        model.addAttribute("details", questService.buildAnswerDetails(form.getResults(), questsRepository));
 
-        // 计算最终向量
-        double[] finalVector = new double[5];
-        for (int i = 0; i < 5; i++) {
-            finalVector[i] = (weightAbsSum[i] != 0) ? (vectorSum[i] / weightAbsSum[i]) : 0.0;
-        }
-
-        model.addAttribute("finalVector", finalVector);
-        model.addAttribute("details", details);
         return "quests_stats";
     }
 

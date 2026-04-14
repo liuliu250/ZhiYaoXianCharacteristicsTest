@@ -81,15 +81,43 @@
 <body>
 
 <div class="stats-container">
+    <div class="match-card" style="background: linear-gradient(135deg, #6e8efb, #a777e3); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+        <span style="font-size: 1rem; opacity: 0.9;">评估结果最接近：</span>
+        <h2 style="margin: 5px 0; font-size: 2rem;" th:text="${matchedProfile}">指挥官</h2>
+    </div>
     <div class="score-banner">
         <h1>最终评估结果</h1>
         <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-            <div th:each="val, iterStat : ${finalVector}" class="vector-item">
-                <div style="font-size: 0.8rem; color: #7f8c8d;" th:text="'维度 ' + ${iterStat.count}"></div>
-                <div style="font-size: 1.5rem; color: #3498db; font-weight: bold;"
-                     th:text="${#numbers.formatDecimal(val, 1, 4)}">0.0000</div>
+            <div th:each="v : ${vectorDetails}" class="vector-item">
+                <div style="font-size: 0.8rem; color: #7f8c8d;" th:text="${v.name}"></div>
+                <div th:text="${#numbers.formatDecimal(v.value, 1, 4)}"
+                     th:style="${v.value >= 0} ? 'font-size: 1.5rem; color: #3498db; font-weight: bold;'
+                                               : 'font-size: 1.5rem; color: #e74c3c; font-weight: bold;'"
+                    >0.0000</div>
+                <div class="dim-comment"
+                     style="font-size: 0.75rem; margin-top: 8px; color: #7f8c8d;"
+                     th:text="${v.comment}">
+                    这里是评价内容
+                </div>
             </div>
         </div>
+    </div>
+    <div class="reference-section" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
+        <h4 style="color: #666;">标准人格参考值</h4>
+        <table style="font-size: 0.85rem; background: #fafafa;">
+            <thead>
+            <tr>
+                <th>人格名称</th>
+                <th th:each="name : ${dimensionNames}" th:text="${name}">维度</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${dimensionProfiles}">
+                <td th:text="${p.name}" style="font-weight: bold;">人格名</td>
+                <td th:each="score : ${p.scores}" th:text="${score}">0.0</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
     <h3>答题清单明细</h3>
