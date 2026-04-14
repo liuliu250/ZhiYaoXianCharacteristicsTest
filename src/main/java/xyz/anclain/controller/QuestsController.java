@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static xyz.anclain.utils.DimensionReference.DIMENSIONS;
+
 @Controller
 @RequestMapping("/quests")
 public class QuestsController {
@@ -39,7 +41,8 @@ public class QuestsController {
     }
 
     @GetMapping("/create")
-    public String createQuests() {
+    public String createQuests(Model model) {
+        model.addAttribute("dimensions", DIMENSIONS);
         return "quests_create";
     }
 
@@ -55,7 +58,7 @@ public class QuestsController {
                     .map(val -> val > 1 ? 1.0 : val)
                     .collect(Collectors.toList());
             quest.setPriority(cleanedList);
-        }
+        } else {return List.of(0, 0, 0, 0, 0).toString();}
 
         questsRepository.save(quest);
         return "redirect:/quests/list";

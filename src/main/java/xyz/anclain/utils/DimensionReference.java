@@ -62,12 +62,12 @@ public class DimensionReference {
         DIMENSIONS.add(new DimensionMeta("出生背景", dimMap4));
 
         TreeMap<Double, String> dimMap5 = new TreeMap<>();
-        dimMap5.put(-1.0, "玩世不恭");//[-1, -0.6)
-        dimMap5.put(-0.6, "乐子");//[-0.6, -0.15)
-        dimMap5.put(-0.15, "日子人");//[-0.15, 0.15)
-        dimMap5.put(0.15, "古板");//[0.15, 0.6)
-        dimMap5.put(0.6, "战争机器");//[0.6, 1]
-        DIMENSIONS.add(new DimensionMeta("严肃性", dimMap5));
+        dimMap5.put(-1.0, "自卑");//[-1, -0.6)
+        dimMap5.put(-0.6, "谦虚");//[-0.6, -0.15)
+        dimMap5.put(-0.15, "平和");//[-0.15, 0.15)
+        dimMap5.put(0.15, "自信");//[0.15, 0.6)
+        dimMap5.put(0.6, "自大");//[0.6, 1]
+        DIMENSIONS.add(new DimensionMeta("自我认知", dimMap5));
     }
 
     public static final List<StandardProfile> PROFILES = Arrays.asList(
