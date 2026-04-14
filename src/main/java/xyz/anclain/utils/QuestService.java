@@ -60,9 +60,12 @@ public class QuestService {
         for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<>();
             double val = vector[i];
-            map.put("name", DimensionReference.NAMES.get(i));
+
+            DimensionReference.DimensionMeta meta = DimensionReference.DIMENSIONS.get(i);
+            map.put("name", meta.name);
             map.put("value", val);
-            map.put("comment", DimensionReference.getComment(val));
+            map.put("comment", meta.getComment(val));
+
             details.add(map);
         }
         return details;

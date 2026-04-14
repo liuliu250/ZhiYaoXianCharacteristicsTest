@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import xyz.anclain.dto.AnswerDTO;
 import xyz.anclain.dto.AnswerForm;
 import xyz.anclain.entity.Quests;
 import xyz.anclain.repository.QuestsRepository;
@@ -18,8 +17,6 @@ import xyz.anclain.utils.QuestService;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static xyz.anclain.utils.DimensionReference.NAMES;
 
 @Controller
 @RequestMapping("/quests")
@@ -32,7 +29,7 @@ public class QuestsController {
 
     @GetMapping("")
     public String index() {
-        return "quests_index"; // 返回上面创建的 HTML 文件名
+        return "quests_index";
     }
 
     @GetMapping("/list")
@@ -42,7 +39,7 @@ public class QuestsController {
     }
 
     @GetMapping("/create")
-    public String createQuests(Model model) {
+    public String createQuests() {
         return "quests_create";
     }
 
@@ -78,13 +75,10 @@ public class QuestsController {
     public String calculateStats(AnswerForm form, Model model) {
         if (form.getResults() == null) return "redirect:/quests";
 
-        // 1. 调用 Service 计算向量
         double[] finalVector = questService.calculateFinalVector(form.getResults(), questsRepository);
 
-        // 2. 调用 Service 匹配人格
         String matchedProfile = questService.findBestMatchProfile(finalVector);
 
-        // 3. 准备前端展示数据
         model.addAttribute("vectorDetails", questService.buildVectorDetails(finalVector));
         model.addAttribute("matchedProfile", matchedProfile);
         model.addAttribute("dimensionProfiles", DimensionReference.PROFILES);

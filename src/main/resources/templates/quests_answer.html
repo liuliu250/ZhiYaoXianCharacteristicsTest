@@ -65,7 +65,7 @@
             <p th:text="${q.description}" style="color: #7f8c8d;"></p>
 
             <div class="slider-box">
-                <label>请选择您的倾向 (-1 ~ 1): <span th:id="'val-' + ${stat.index}">0</span></label>
+                <label>请选择您的倾向，越靠右越表示赞同: <span th:id="'val-' + ${stat.index}">0</span></label>
 
                 <input type="range"
                        th:name="'results[' + ${stat.index} + '].score'"
