@@ -2,160 +2,144 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>制药阁人格测试 - 结果</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; display: flex; justify-content: center; padding: 40px; }
-        /* 基础容器样式 */
-        .stats-container, .answer-container, .dashboard, .list-container {
-            width: 95%;           /* 手机端默认宽度 */
-            max-width: 800px;     /* 电脑端最大宽度 */
-            margin: 20px auto;    /* 居中 */
-            padding: 20px;        /* 适当减小内边距 */
+        /* 1. 减少 body 层面的留白 */
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            padding: 20px; /* 从 40px 减小到 10px */
+            margin: 0;
+        }
+
+        /* 2. 统一容器宽度，减少不必要的收缩 */
+        .stats-container {
+            background: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 15px; /* 从 30px 减小到 15px */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             box-sizing: border-box;
         }
 
-        /* 媒体查询：针对屏幕宽度大于 768px 的设备（电脑/平板） */
-        @media (min-width: 768px) {
-            .stats-container, .answer-container, .dashboard {
-                width: 80%;       /* 电脑端适当收窄，避免文字过长 */
-                padding: 40px;    /* 增加留白感 */
-            }
+        /* 3. 紧凑型 Banner */
+        .score-banner {
+            text-align: center;
+            padding: 15px 10px; /* 压缩上下内边距 */
+            background: #ebf5ff;
+            border-radius: 8px;
+            margin-bottom: 15px; /* 减小下方间距 */
         }
-        @media (max-width: 600px) {
-            table {
-                display: block;
-                overflow-x: auto; /* 允许表格横向滚动 */
-                white-space: nowrap; /* 避免文字强制换行 */
-            }
+        .score-banner h1 { margin: 0; color: #2c3e50; font-size: 1.1rem; }
 
-            /* 减小均值向量卡片的字体 */
-            .vector-item {
-                padding: 5px;
-                margin: 2px;
-            }
-            .vector-item div:last-child {
-                font-size: 1rem !important;
-            }
-        }
-        .stats-container { background: white; width: 100%; max-width: 800px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .score-banner { text-align: center; padding: 20px; background: #ebf5ff; border-radius: 10px; margin-bottom: 30px; }
-        .score-banner h1 { margin: 0; color: #2c3e50; font-size: 1.2rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background-color: #fcfcfc; color: #7f8c8d; text-align: left; padding: 12px; border-bottom: 2px solid #eee; }
-        td { padding: 15px 12px; border-bottom: 1px solid #eee; color: #34495e; }
-        .id-badge { background: #eee; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.9rem; }
-        .back-btn { display: inline-block; margin-top: 30px; text-decoration: none; color: #3498db; font-weight: 500; }
-        .back-btn:hover { text-decoration: underline; }
+        /* 4. 均值卡片紧凑排布 */
         .vector-item {
             background: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            text-align: center;
-            flex: 1;
-            margin: 0 5px;
-        }
-        .visual-bar-container {
-            height: 12px; /* 稍微细一点，更精致 */
-            background-color: #f1f1f1;
+            padding: 8px 5px; /* 减小内边距 */
             border-radius: 6px;
-            overflow: hidden;
-            width: 100%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-align: center;
+            flex: 1 1 28%; /* 允许更灵活的换行 */
+            min-width: 80px;
+            margin: 2px;
         }
-        .fill-block {
-            height: 100%;
-            transition: width 0.4s ease-out;
+
+        /* 5. 表格样式微调 */
+        table { width: 100%; border-collapse: collapse; }
+        th { color: #999; text-align: left; padding: 8px 5px; border-bottom: 1px solid #eee; font-size: 0.8rem; }
+        td { padding: 10px 5px; border-bottom: 1px solid #eee; color: #34495e; }
+
+        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-size: 0.9rem; }
+
+        .score-number-cell { font-family: 'Courier New', monospace; font-weight: bold; }
+        .text-pos { color: #3498db; }
+        .text-neg { color: #e74c3c; }
+
+        /* 针对极小屏幕进一步压缩 */
+        @media (max-width: 400px) {
+            .stats-container { padding: 10px; }
+            .vector-item div:nth-child(2) { font-size: 1.2rem !important; } /* 数字稍微缩小 */
         }
-        .fill-block.positive { background-color: #3498db; }
-        .fill-block.negative { background-color: #e74c3c; }
-        .score-number-cell {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 1.0rem;
-        }
-        .text-pos { color: #3498db; } /* 正数蓝色 */
-        .text-neg { color: #e74c3c; } /* 负数红色 */
     </style>
 </head>
 <body>
 
 <div class="stats-container">
-    <div class="match-card" style="background: linear-gradient(135deg, #6e8efb, #a777e3); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
-        <span style="font-size: 1rem; opacity: 0.9;">评估结果最接近：</span>
-        <h2 style="margin: 5px 0; font-size: 2rem;" th:text="${matchedProfile}">指挥官</h2>
+    <div class="match-card" style="background: linear-gradient(135deg, #6e8efb, #a777e3); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+        <span style="font-size: 0.9rem; opacity: 0.9;">结果最接近：</span>
+        <h2 style="margin: 0; font-size: 1.8rem;" th:text="${matchedProfile}">指挥官</h2>
     </div>
+
     <div class="score-banner">
         <h1>最终评估结果</h1>
-        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px;">
             <div th:each="v : ${vectorDetails}" class="vector-item">
-                <div style="font-size: 0.8rem; color: #7f8c8d;" th:text="${v.name}"></div>
+                <div style="font-size: 0.75rem; color: #7f8c8d; margin-bottom: 4px;" th:text="${v.name}"></div>
                 <div th:text="${#numbers.formatDecimal(v.value, 1, 4)}"
-                     th:style="${v.value >= 0} ? 'font-size: 1.5rem; color: #3498db; font-weight: bold;'
-                                               : 'font-size: 1.5rem; color: #e74c3c; font-weight: bold;'"
-                    >0.0000</div>
-                <div class="dim-comment"
-                     style="font-size: 0.75rem; margin-top: 8px; color: #7f8c8d;"
-                     th:text="${v.comment}">
-                    这里是评价内容
-                </div>
+                     th:style="${v.value >= 0} ? 'font-size: 1.3rem; color: #3498db; font-weight: bold;'
+                                               : 'font-size: 1.3rem; color: #e74c3c; font-weight: bold;'"
+                >0.0000</div>
+                <div style="font-size: 0.7rem; margin-top: 4px; color: #999;" th:text="${v.comment}">评价内容</div>
             </div>
         </div>
     </div>
-    <div class="reference-section" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
-        <h4 style="color: #666;">标准人格参考值</h4>
-        <table style="font-size: 0.85rem; background: #fafafa;">
+
+    <div class="reference-section" style="margin-top: 15px; border-top: 1px dashed #ddd; padding-top: 10px;">
+        <h4 style="color: #888; font-size: 0.85rem; margin: 0 0 8px 0;">标准人格参考值</h4>
+        <table style="table-layout: fixed; font-size: 0.75rem;">
             <thead>
             <tr>
-                <th>人格名称</th>
-                <th th:each="name : ${dimensionNames}" th:text="${name}">维度</th>
+                <th style="width: 22%; text-align: left;">人格</th>
+                <th th:each="name : ${dimensionNames}" th:text="${name}" style="text-align: center;">维度名</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="p : ${dimensionProfiles}">
-                <td th:text="${p.name}" style="font-weight: bold;">人格名</td>
-                <td th:each="score : ${p.scores}" th:text="${score}">0.0</td>
+                <td th:text="${p.name}" style="font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">人格名</td>
+                <td th:each="score : ${p.scores}" th:text="${score}" style="text-align: center; font-family: monospace;">0.0</td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <h3>答题清单明细</h3>
-    <table>
-        <thead>
-        <tr>
-            <th width="10%">ID</th>
-            <th width="50%">题目标题</th>
-            <th width="25%">可视化倾向</th>
-            <th width="15%" style="text-align: right;">打分分值</th> </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${details}">
-            <td><span class="id-badge" th:text="${item.id}">1</span></td>
-            <td><strong th:text="${item.title}">题目名称</strong></td>
-
-            <td>
-                <div class="visual-bar-container">
-                    <div class="fill-block"
-                         th:classappend="${item.userScore >= 0} ? 'positive' : 'negative'"
-                         th:style="'width:' + ${#numbers.formatDecimal(T(java.lang.Math).abs(item.userScore) * 100, 1, 0)} + '%'">
+    <div class="details-section" style="margin-top: 20px;">
+        <h3 style="color: #333; font-size: 1rem; border-left: 3px solid #3498db; padding-left: 8px; margin-bottom: 10px;">答题清单明细</h3>
+        <table style="table-layout: fixed; font-size: 0.8rem;">
+            <thead>
+            <tr style="border-bottom: 1px solid #eee; color: #999;">
+                <th style="width: 30px;">ID</th>
+                <th>题目标题</th>
+                <th style="width: 20%; text-align: center;">倾向</th>
+                <th style="width: 50px; text-align: right;">分值</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${details}">
+                <td th:text="${item.id}" style="color: #ccc; font-size: 0.7rem;">1</td>
+                <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <strong th:text="${item.title}" style="font-weight: 500;">标题</strong>
+                </td>
+                <td>
+                    <div style="height: 6px; background: #eee; border-radius: 3px; overflow: hidden;">
+                        <div th:style="'width:' + ${#numbers.formatDecimal(T(java.lang.Math).abs(item.userScore) * 100, 1, 0)} + '%; ' +
+                                          'height: 100%; ' + (${item.userScore >= 0} ? 'background: #3498db; float: left;' : 'background: #e74c3c; float: right;')">
+                        </div>
                     </div>
-                </div>
-            </td>
+                </td>
+                <td style="text-align: right; font-family: monospace;"
+                    th:classappend="${item.userScore >= 0} ? 'text-pos' : 'text-neg'"
+                    th:text="${#numbers.formatDecimal(item.userScore, 1, 2)}">0.00</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-            <td style="text-align: right;">
-                <span class="score-number-cell"
-                      th:classappend="${item.userScore >= 0} ? 'text-pos' : 'text-neg'"
-                      th:text="${#numbers.formatDecimal(item.userScore, 1, 2)}">
-                    0.00
-                </span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div style="text-align: center; margin-top: 30px;">
-        <a href="/quests" class="back-btn">返回主页</a>
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="/quests" class="back-btn">← 返回主页</a>
     </div>
 </div>
 

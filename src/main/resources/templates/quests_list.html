@@ -142,6 +142,9 @@
 <div class="top-nav">
   <div class="nav-content">
     <h1 class="page-title">题目列表</h1>
+    <span style="font-size: 0.75rem; color: #95a5a6; margin-left: 15px; margin-top: 5px;">
+      权重参考：[ <span th:each="dim, iter : ${dimensions}" th:text="${iter.count + '.' + dim.name + (iter.last ? '' : ' | ')}"></span> ]
+    </span>
     <div class="nav-buttons">
       <a href="/quests" class="nav-btn btn-secondary">返回主页</a>
       <a href="/quests/create" class="nav-btn btn-primary">+ 创建题目</a>

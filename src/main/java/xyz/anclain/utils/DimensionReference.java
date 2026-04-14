@@ -54,12 +54,12 @@ public class DimensionReference {
         DIMENSIONS.add(new DimensionMeta("做题道德", dimMap3));
 
         TreeMap<Double, String> dimMap4 = new TreeMap<>();
-        dimMap4.put(-1.0, "穷鬼");//[-1, -0.6)
-        dimMap4.put(-0.6, "中产");//[-0.6, -0.15)
-        dimMap4.put(-0.15, "小资");//[-0.15, 0.15)
-        dimMap4.put(0.15, "富哥");//[0.15, 0.6)
-        dimMap4.put(0.6, "地头蛇");//[0.6, 1]
-        DIMENSIONS.add(new DimensionMeta("出生背景", dimMap4));
+        dimMap4.put(-1.0, "墙头草");//[-1, -0.6)
+        dimMap4.put(-0.6, "社交达人");//[-0.6, -0.15)
+        dimMap4.put(-0.15, "背景板");//[-0.15, 0.15)
+        dimMap4.put(0.15, "小团体");//[0.15, 0.6)
+        dimMap4.put(0.6, "内阁");//[0.6, 1]
+        DIMENSIONS.add(new DimensionMeta("抱团能力", dimMap4));
 
         TreeMap<Double, String> dimMap5 = new TreeMap<>();
         dimMap5.put(-1.0, "自卑");//[-1, -0.6)
@@ -71,9 +71,9 @@ public class DimensionReference {
     }
 
     public static final List<StandardProfile> PROFILES = Arrays.asList(
-            new StandardProfile("指挥官", new double[]{0.1, 0.7, 0.2, -0.1, 0.4}),
-            new StandardProfile("调停者", new double[]{0.3, 0.2, 0.9, 0.5, 0.4}),
-            new StandardProfile("研究员", new double[]{0.9, 0.9, 0.1, 0.3, 0.6})
+            new StandardProfile("黄西轮", new double[]{-0.8, 0.35, 0.1, 0, 0.4}),
+            new StandardProfile("鸡人", new double[]{-0.65, 0.5, 0.2, 0.5, 0.1}),
+            new StandardProfile("水管", new double[]{-0.7, 0.7, -0.1, 0.1, 0.3})
     );
 
 }

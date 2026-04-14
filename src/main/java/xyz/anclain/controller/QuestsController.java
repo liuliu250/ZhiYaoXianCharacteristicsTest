@@ -37,6 +37,7 @@ public class QuestsController {
     @GetMapping("/list")
     public String getAllQuests(Model model) {
         model.addAttribute("questsList", questsRepository.findByIsShownTrue());
+        model.addAttribute("dimensions", DimensionReference.DIMENSIONS);
         return "quests_list";
     }
 
