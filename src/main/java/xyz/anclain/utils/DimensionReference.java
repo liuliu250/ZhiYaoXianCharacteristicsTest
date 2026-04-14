@@ -64,7 +64,7 @@ public class DimensionReference {
         TreeMap<Double, String> dimMap5 = new TreeMap<>();
         dimMap5.put(-1.0, "自卑");//[-1, -0.6)
         dimMap5.put(-0.6, "谦虚");//[-0.6, -0.15)
-        dimMap5.put(-0.15, "平和");//[-0.15, 0.15)
+        dimMap5.put(-0.15, "平庸");//[-0.15, 0.15)
         dimMap5.put(0.15, "自信");//[0.15, 0.6)
         dimMap5.put(0.6, "自大");//[0.6, 1]
         DIMENSIONS.add(new DimensionMeta("自我认知", dimMap5));
