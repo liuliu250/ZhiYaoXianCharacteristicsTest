@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -72,6 +72,9 @@
     <div class="match-card" style="background: linear-gradient(135deg, #6e8efb, #a777e3); color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
         <span style="font-size: 0.9rem; opacity: 0.9;">结果最接近：</span>
         <h2 style="margin: 0; font-size: 1.8rem;" th:text="${matchedProfile}">指挥官</h2>
+        <div style="font-size: 0.85rem; opacity: 0.8; margin-top: 5px;">
+            契合度：<span th:text="${matchedScore}">95.50</span>
+        </div>
     </div>
 
     <div class="score-banner">

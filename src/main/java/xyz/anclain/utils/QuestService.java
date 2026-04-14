@@ -1,6 +1,5 @@
 package xyz.anclain.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.anclain.dto.AnswerDTO;
 import xyz.anclain.repository.QuestsRepository;
@@ -12,6 +11,16 @@ import java.util.Map;
 
 @Service
 public class QuestService {
+
+    public static class MatchResult {
+        public String name;
+        public double cosineSimilarity;
+
+        public MatchResult(String name, double cosineSimilarity) {
+            this.name = name;
+            this.cosineSimilarity = cosineSimilarity;
+        }
+    }
 
     public double[] calculateFinalVector(List<AnswerDTO> results, QuestsRepository repository) {
         double[] vectorSum = new double[5];
@@ -38,21 +47,30 @@ public class QuestService {
         return finalVector;
     }
 
-    public String findBestMatchProfile(double[] userVector) {
-        String bestMatch = "未知";
+    public MatchResult findBestMatchProfile(double[] userVector) {
+        String bestMatchName = "未知";
         double minDistance = Double.MAX_VALUE;
+        double[] bestMatchScores = null;
 
         for (DimensionReference.StandardProfile profile : DimensionReference.PROFILES) {
             double dist = 0;
             for (int i = 0; i < 5; i++) {
                 dist += Math.pow(userVector[i] - profile.scores[i], 2);
             }
+
             if (dist < minDistance) {
                 minDistance = dist;
-                bestMatch = profile.name;
+                bestMatchName = profile.name;
+                bestMatchScores = profile.scores;
             }
         }
-        return bestMatch;
+
+        double cosineSim = 0;
+        if (bestMatchScores != null) {
+            cosineSim = calculateCosineSimilarity(userVector, bestMatchScores);
+        }
+
+        return new MatchResult(bestMatchName, cosineSim);
     }
 
     public List<Map<String, Object>> buildVectorDetails(double[] vector) {
@@ -87,4 +105,26 @@ public class QuestService {
         }
         return details;
     }
+
+    public static double calculateCosineSimilarity(double[] vectorA, double[] vectorB) {
+        if (vectorA.length != vectorB.length) return 0;
+
+        double dotProduct = 0.0;
+        double normA = 0.0;
+        double normB = 0.0;
+
+        for (int i = 0; i < vectorA.length; i++) {
+            dotProduct += vectorA[i] * vectorB[i];
+            normA += Math.pow(vectorA[i], 2);
+            normB += Math.pow(vectorB[i], 2);
+        }
+
+        double denominator = Math.sqrt(normA) * Math.sqrt(normB);
+        if (denominator == 0) return 0;
+
+        double cosine = dotProduct / denominator;
+
+        return (cosine + 1) / 2;
+    }
+
 }

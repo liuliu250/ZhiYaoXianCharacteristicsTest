@@ -81,10 +81,11 @@ public class QuestsController {
 
         double[] finalVector = questService.calculateFinalVector(form.getResults(), questsRepository);
 
-        String matchedProfile = questService.findBestMatchProfile(finalVector);
+        QuestService.MatchResult result = questService.findBestMatchProfile(finalVector);
 
         model.addAttribute("vectorDetails", questService.buildVectorDetails(finalVector));
-        model.addAttribute("matchedProfile", matchedProfile);
+        model.addAttribute("matchedProfile", result.name);
+        model.addAttribute("matchedScore", String.format("%.2f", result.cosineSimilarity * 100) + "%");
         model.addAttribute("dimensionProfiles", DimensionReference.PROFILES);
         model.addAttribute("details", questService.buildAnswerDetails(form.getResults(), questsRepository));
 
