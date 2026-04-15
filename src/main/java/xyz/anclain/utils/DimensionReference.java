@@ -71,10 +71,10 @@ public class DimensionReference {
     }
 
     public static final List<StandardProfile> PROFILES = Arrays.asList(
-            new StandardProfile("黄西轮", new double[]{-0.8, 0.35, -0.1, 0, 0.4}),
+            new StandardProfile("黄西轮", new double[]{-0.8, 0.2, -0.1, 0, 0.4}),
             new StandardProfile("鸡人", new double[]{-0.3, 0.15, -0.05, -0.2, 0.1}),
-            new StandardProfile("水管", new double[]{-0.65, 0.6, 0.25, 0.15, 0.25}),
-            new StandardProfile("牛至", new double[]{-0.75, 0.4, 0.4, 0.2, 0.3}),
+            new StandardProfile("水管", new double[]{-0.65, 0.5, 0.25, 0.15, 0.25}),
+            new StandardProfile("牛至", new double[]{-0.75, 0.35, 0.4, 0.2, 0.3}),
             new StandardProfile("丁丁", new double[]{-0.7, -0.4, 0.1, -0.25, 0.1}),
             new StandardProfile("ycy", new double[]{-0.75, 0.15, 0.0, 0.1, -0.1}),
             new StandardProfile("kuigo", new double[]{-0.7, 0.1, 0.3, -0.15, -0.2})

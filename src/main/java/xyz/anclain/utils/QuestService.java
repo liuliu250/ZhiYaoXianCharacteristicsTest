@@ -1,9 +1,13 @@
 package xyz.anclain.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.anclain.dto.AnswerDTO;
+import xyz.anclain.entity.TestResult;
 import xyz.anclain.repository.QuestsRepository;
+import xyz.anclain.repository.TestResultRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,6 +129,19 @@ public class QuestService {
         double cosine = dotProduct / denominator;
 
         return (cosine + 1) / 2;
+    }
+
+    @Autowired
+    private TestResultRepository testResultRepository;
+
+    public void saveFinalResult(double[] finalVector, MatchResult result) {
+        TestResult testResult = new TestResult();
+        testResult.setVector(finalVector);
+        testResult.setMatchedProfile(result.name);
+        testResult.setMatchedScore(result.cosineSimilarity);
+        testResult.setCreatedAt(LocalDateTime.now());
+
+        testResultRepository.save(testResult);
     }
 
 }

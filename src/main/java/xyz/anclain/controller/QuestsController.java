@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import xyz.anclain.dto.AnswerForm;
 import xyz.anclain.entity.Quests;
+import xyz.anclain.entity.TestResult;
 import xyz.anclain.repository.QuestsRepository;
+import xyz.anclain.repository.TestResultRepository;
 import xyz.anclain.utils.DimensionReference;
 import xyz.anclain.utils.QuestService;
 
@@ -28,6 +30,8 @@ public class QuestsController {
     private QuestService questService;
     @Autowired
     private QuestsRepository questsRepository;
+    @Autowired
+    private TestResultRepository testResultRepository;
 
     @GetMapping("")
     public String index() {
@@ -74,6 +78,8 @@ public class QuestsController {
         model.addAttribute("questsList", allQuests);
         return "quests_answer";
     }
+
+
 
     @PostMapping("/stats")
     public String calculateStats(AnswerForm form, Model model) {
