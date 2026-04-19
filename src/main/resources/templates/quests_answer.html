@@ -59,7 +59,7 @@
 <body>
 
 <div class="answer-container">
-    <form id="answerForm" th:action="@{/quests/stats}" method="post">
+    <form id="answerForm" th:action="@{/quests/submit}" method="post">
         <div th:each="q, stat : ${questsList}" class="quest-page" th:classappend="${stat.index == 0} ? 'active' : ''">
             <h3 th:text="'问题 ' + ${stat.count} + ': ' + ${q.title}">题目名称</h3>
             <p th:text="${q.description}" style="color: #7f8c8d;"></p>

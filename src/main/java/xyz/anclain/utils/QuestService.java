@@ -134,7 +134,7 @@ public class QuestService {
     @Autowired
     private TestResultRepository testResultRepository;
 
-    public void saveFinalResult(double[] finalVector, MatchResult result) {
+    public TestResult saveFinalResult(double[] finalVector, MatchResult result) {
         TestResult testResult = new TestResult();
         testResult.setVector(finalVector);
         testResult.setMatchedProfile(result.name);
@@ -142,6 +142,8 @@ public class QuestService {
         testResult.setCreatedAt(LocalDateTime.now());
 
         testResultRepository.save(testResult);
+
+        return testResult;
     }
 
 }
